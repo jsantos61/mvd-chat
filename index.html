@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arizona MVD Chat</title>
+
+<style>
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f3f3f3;
+    margin: 30px;
+}
+
+/* Initial Start Button Screen */
+#startScreen {
+    text-align: center;
+    margin-top: 100px;
+}
+
+#launchFormButton {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    border: 1px solid #204d74;
+    border-radius: 3px;
+    cursor: pointer;
+    background: linear-gradient(to bottom,#5d93cf 0%,#2f6699 100%);
+}
+
+#launchFormButton:hover {
+    background: linear-gradient(to bottom,#74a6dd 0%,#3e75aa 100%);
+}
+
+/* Chat Form Container */
+.chat-container {
+    width: 700px;
+    border: 1px solid #9a9a9a;
+    border-radius: 4px;
+    background: #f5f5f5;
+    box-shadow: 0 1px 4px rgba(0,0,0,.20);
+    margin: 0 auto;
+}
+
+.chat-header {
+    background: linear-gradient(to bottom,#4f81bd 0%,#2f5d8c 100%);
+    color: #ffffff;
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #26496d;
+}
+
+.chat-body {
+    padding: 15px;
+}
+
+.chat-form {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border: 1px solid #d5d5d5;
+}
+
+.chat-form tr {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.chat-form th {
+    width: 260px;
+    text-align: left;
+    vertical-align: middle;
+    background: #f7f7f7;
+    padding: 12px;
+    font-weight: normal;
+    color: #444;
+    border-right: 1px solid #e5e5e5;
+}
+
+.chat-form td {
+    padding: 10px;
+}
+
+.chat-form input,
+.chat-form select {
+    width: 100%;
+    max-width: 325px;
+    padding: 7px;
+    border: 1px solid #bfbfbf;
+    background: white;
+    font-size: 13px;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+.chat-form input:focus,
+.chat-form select:focus {
+    outline: none;
+    border-color: #5b9bd5;
+    box-shadow: 0 0 4px rgba(91,155,213,.50);
+}
+
+.required {
+    color: #c00000;
+}
+
+#chat-button {
+    margin-top: 15px;
+    padding: 8px 18px;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #204d74;
+    border-radius: 3px;
+    cursor: pointer;
+    background: linear-gradient(to bottom,#5d93cf 0%,#2f6699 100%);
+}
+
+#chat-button:hover {
+    background: linear-gradient(to bottom,#74a6dd 0%,#3e75aa 100%);
+}
+
+.error {
+    margin-top: 12px;
+    color: #c00000;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Initial Button -->
+<div id="startScreen">
+    <button id="launchFormButton">
+        Start Chat
+    </button>
+</div>
+
+<!-- Hidden Form -->
+<div class="chat-container" id="preChatForm" style="display:none;">
+
+    <div class="chat-header">
+        Chat with an MVD Representative
+    </div>
+
+    <div class="chat-body">
+
+        <table class="chat-form">
+
+            <tr>
+                <th>
+                    First &amp; Last Name
+                    <span class="required">*</span>
+                </th>
+                <td>
+                    <input
+                        type="text"
+                        id="fullname"
+                        maxlength="100"
+                        placeholder="Required">
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    Date of Birth (MM/DD/YYYY)
+                    <span class="required">*</span>
+                </th>
+                <td>
+                    <input
+                        type="text"
+                        id="dob"
+                        maxlength="10"
+                        placeholder="Required">
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    Last 4 of SSN
+                    <span class="required">*</span>
+                </th>
+                <td>
+                    <input
+                        type="text"
+                        id="last4ssn"
+                        maxlength="4"
+                        placeholder="Required">
+                </td>
+            </tr>
+
+            <tr>
+                <th>Driver License or ID#</th>
+                <td>
+                    <input
+                        type="text"
+                        id="driversLicense"
+                        maxlength="25"
+                        placeholder="Optional">
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    Inquiry
+                    <span class="required">*</span>
+                </th>
+                <td>
+                    <select id="inquiryType">
+                        <option value="">Select Inquiry</option>
+                        <option value="Driver License/State ID Card">Driver License/State ID Card</option>
+                        <option value="Title and Registration">Title and Registration</option>
+                        <option value="AZMVDNOW access">AZMVDNOW access</option>
+                        <option value="Mandatory Insurance">Mandatory Insurance</option>
+                        <option value="Sold notice">Sold notice</option>
+                        <option value="Emission">Emission</option>
+                        <option value="Requesting a Hearing">Requesting a Hearing</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+
+        <button type="button" id="chat-button">
+            Submit & Start Chat
+        </button>
+
+        <div id="errorMessage" class="error"></div>
+
+    </div>
+
+</div>
+
+<!-- Genesys Messenger Bootstrap -->
+<script type="text/javascript" charset="utf-8">
+(function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+
+    g[e] = g[e] || function () {
+        (g[e].q = g[e].q || []).push(arguments);
+    };
+
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+
+    ys = document.createElement('script');
+    ys.async = true;
+    ys.src = n;
+    ys.charset = 'utf-8';
+
+    document.head.appendChild(ys);
+
+})(window,
+   'Genesys',
+   'https://apps.use2.us-gov-pure.cloud/genesys-bootstrap/genesys.min.js',
+   {
+       environment: 'fedramp-use2-core',
+       deploymentId: 'fa44319e-91f1-41b4-a873-8c7b03dba159'
+   });
+</script>
+
+<script>
+
+/* Hide Messenger launcher immediately */
+Genesys("subscribe", "Launcher.ready", function () {
+    Genesys("command", "Launcher.hide");
+});
+
+/* Show pre-chat form */
+document.getElementById('launchFormButton').addEventListener('click', function () {
+
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('preChatForm').style.display = 'block';
+
+});
+
+/* Submit form and launch Messenger */
+document.getElementById('chat-button').addEventListener('click', function () {
+
+    var fullName = document.getElementById('fullname').value.trim();
+    var dob = document.getElementById('dob').value.trim();
+    var last4ssn = document.getElementById('last4ssn').value.trim();
+    var driversLicense = document.getElementById('driversLicense').value.trim();
+    var inquiryType = document.getElementById('inquiryType').value;
+
+    var errorDiv = document.getElementById('errorMessage');
+    errorDiv.innerHTML = '';
+
+    if (!fullName) {
+        errorDiv.innerHTML = 'Please enter First & Last Name.';
+        return;
+    }
+
+    if (!dob) {
+        errorDiv.innerHTML = 'Please enter Date of Birth.';
+        return;
+    }
+
+    if (!/^\d{4}$/.test(last4ssn)) {
+        errorDiv.innerHTML = 'Last 4 of SSN must be exactly 4 digits.';
+        return;
+    }
+
+    if (!inquiryType) {
+        errorDiv.innerHTML = 'Please select an Inquiry.';
+        return;
+    }
+
+    Genesys("command", "Database.set", {
+        messaging: {
+            customAttributes: {
+				customerFullName: fullName,
+                customerDOB: dob,
+                customerSSN: last4ssn,
+                customerID: driversLicense,
+                customerInquiry: inquiryType
+            }
+        }
+    });
+
+    document.getElementById('preChatForm').style.display = 'none';
+
+    Genesys("command", "Messenger.open");
+
+});
+</script>
+
+</body>
+</html>
